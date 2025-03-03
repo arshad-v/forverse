@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+
+.chatbot-container {
+  @apply border border-gray-300 rounded-lg p-4 w-96;
+}
+
+.chatbot-header {
+  @apply text-lg font-semibold mb-2;
+}
+
+.chatbot-body {
+  @apply h-48 overflow-y-auto mb-4;
+}
+
+.chatbot-input {
+  @apply flex space-x-2;
+}
+
+.chatbot-input input {
+  @apply flex-grow border border-gray-300 rounded-md p-2;
+}
+
+.chatbot-input button {
+  @apply bg-blue-500 text-white rounded-md px-4 py-2;
+}
+
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-overlay {
+    background: linear-gradient(to bottom right, rgba(30, 64, 175, 0.05), rgba(109, 40, 217, 0.05));
+  }
+}

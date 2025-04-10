@@ -64,12 +64,12 @@ const Home = () => {
     <>
       <div className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative py-16 overflow-hidden rounded-3xl mt-4">
+        <section className="relative py-36 overflow-hidden rounded-3xl mt-4 mx-4">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 to-purple-900/20" />
           <div
             className="absolute inset-0 bg-[url('https://i.postimg.cc/LXLmm6Q7/Pics-Art-01-23-05-49-30.jpg')] bg-center bg-no-repeat transform perspective-1000 rotate-y-6 scale-105 shadow-2xl"
           />
-          <div className="relative max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-left">
               <h1 className="text-2xl md:text-4xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
                 Your AI Innovation Partner

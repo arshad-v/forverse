@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaRobot, FaPaperPlane, FaTimes } from "react-icons/fa";
+import { FaRobot, FaPaperPlane, FaTimes, FaSpinner } from "react-icons/fa";
 
 interface Message {
   text: string;
@@ -12,6 +12,7 @@ const Chatbot = () => {
     { text: "Hello! How can I help you today?", isBot: true }
   ]);
   const [inputText, setInputText] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages appear
@@ -21,21 +22,40 @@ const Chatbot = () => {
     }
   }, [messages]);
 
-  const handleSend = () => {
-    if (inputText.trim() === "") return;
-    
-    // Add user message
-    setMessages([...messages, { text: inputText, isBot: false }]);
-    
-    // Simulate bot response (replace with actual API call)
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev, 
-        { text: "Thank you for your message. Our AI is processing your request.", isBot: true }
-      ]);
-    }, 1000);
-    
+  const handleSend = async () => {
+    const userMessage = inputText.trim();
+    if (userMessage === "") return;
+
+    // Add user message immediately
+    setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
     setInputText("");
+    setIsLoading(true); // Set loading state
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      // Add bot response
+      setMessages(prev => [...prev, { text: data.reply || "Sorry, I couldn't get a response.", isBot: true }]);
+
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      // Add error message to chat
+      setMessages(prev => [...prev, { text: "Sorry, something went wrong. Please try again later.", isBot: true }]);
+    } finally {
+      setIsLoading(false); // Clear loading state
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -81,6 +101,14 @@ const Chatbot = () => {
                 </div>
               </div>
             ))}
+            {/* Optional: Show loading indicator */}
+            {isLoading && (
+              <div className="flex justify-start mb-3">
+                 <div className="bg-gray-200 text-gray-800 rounded-lg px-4 py-2 rounded-bl-none inline-flex items-center">
+                   <FaSpinner className="animate-spin mr-2" /> Thinking...
+                 </div>
+              </div>
+            )}
             <div ref={messageEndRef} />
           </div>
           
@@ -98,14 +126,14 @@ const Chatbot = () => {
               />
               <button
                 onClick={handleSend}
-                disabled={inputText.trim() === ""}
+                disabled={inputText.trim() === "" || isLoading} // Disable button when loading
                 className={`ml-2 p-2 rounded-full ${
-                  inputText.trim() === "" 
+                  inputText.trim() === "" || isLoading
                     ? "bg-gray-300 cursor-not-allowed" 
                     : "bg-blue-600 hover:bg-blue-700"
                 } text-white transition`}
               >
-                <FaPaperPlane size={16} />
+                {isLoading ? <FaSpinner className="animate-spin" size={16} /> : <FaPaperPlane size={16} />}
               </button>
             </div>
           </div>
